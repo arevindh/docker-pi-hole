@@ -16,8 +16,8 @@ version: "3"
 # More info at https://github.com/arevindh/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
-    container_name: pihole
-    image: pihole/pihole:latest
+    container_name: pihole-speedtest
+    image: arevindh/pihole:latest
     ports:
       - "53:53/tcp"
       - "53:53/udp"

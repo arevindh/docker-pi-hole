@@ -84,4 +84,16 @@ sed -i $'s/echo_current_diagnostic "Operating system"/echo_current_diagnostic "O
 
 touch /.piholeFirstBoot
 
+mkdir /tmp/sp
+
+cd /tmp/sp
+
+curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.0.0-armhf-linux.tgz
+
+tar -xvzf ookla-speedtest-1.0.0-armhf-linux.tgz
+
+mv speedtest /usr/bin/speedtest
+
+speedtest --version
+
 echo 'Docker install successful'
