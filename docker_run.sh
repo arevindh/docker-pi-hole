@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# https://github.com/pi-hole/docker-pi-hole/blob/master/README.md
+# https://github.com/arevindh/docker-pi-hole/blob/master/README.md
 
 PIHOLE_BASE="${PIHOLE_BASE:-$(pwd)}"
 [[ -d "$PIHOLE_BASE" ]] || mkdir -p "$PIHOLE_BASE" || { echo "Couldn't create storage directory: $PIHOLE_BASE"; exit 1; }
