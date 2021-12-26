@@ -6,6 +6,13 @@ ENV PIHOLE_DOCKER_TAG "${PIHOLE_DOCKER_TAG}"
 
 ENV S6_OVERLAY_VERSION v2.1.0.2
 
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        jq \
+        sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY install.sh /usr/local/bin/install.sh
 ENV PIHOLE_INSTALL /etc/.pihole/automated\ install/basic-install.sh
 
