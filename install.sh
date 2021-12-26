@@ -105,4 +105,4 @@ mv speedtest /usr/bin/speedtest
 
 speedtest --version
 
-echo 'Docker install successful'
+echo 'Speedtest Docker install successful'
