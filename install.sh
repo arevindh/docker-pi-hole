@@ -27,7 +27,7 @@ esac
 }
 
 apt-get update
-apt-get install --no-install-recommends -y curl procps ca-certificates git
+apt-get install --no-install-recommends -y curl procps ca-certificates git wget
 # curl in armhf-buster's image has SSL issues. Running c_rehash fixes it.
 # https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=923479
 c_rehash
@@ -102,10 +102,9 @@ esac
 
 echo "Arch is ${SP_ARCH}"
 
-curl -o ookla-speedtest.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
+wget https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 
-tar -zxvf ookla-Speedtest.tgz
-
+tar -zxvf okla-speedtest*.tgz
 mv speedtest /usr/bin/speedtest
 
 speedtest --version
