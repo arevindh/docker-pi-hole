@@ -102,9 +102,9 @@ esac
 
 echo "Arch is ${SP_ARCH}"
 
-curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
+curl -o ookla-speedtest.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 
-tar -xvzf ookla-speedtest-1.0.0-armhf-linux.tgz
+tar -zxvf ookla-Speedtest.tgz
 
 mv speedtest /usr/bin/speedtest
 
