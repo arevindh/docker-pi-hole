@@ -89,6 +89,9 @@ mkdir /tmp/sp
 cd /tmp/sp
 
 DETECTED_ARCH=$(dpkg --print-architecture)
+
+echo "DETECTED_ARCH ${DETECTED_ARCH}"
+
 SP_ARCH=$DETECTED_ARCH
 case $DETECTED_ARCH in
   arm64)
@@ -96,6 +99,8 @@ case $DETECTED_ARCH in
   amd64)
     SP_ARCH="x86_64";;
 esac
+
+echo "Arch is ${SP_ARCH}"
 
 curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 
