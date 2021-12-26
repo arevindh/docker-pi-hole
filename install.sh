@@ -97,7 +97,7 @@ case $DETECTED_ARCH in
     SP_ARCH="x86_64";;
 esac
 
-curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tar.gz
+curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 
 tar -xvzf ookla-speedtest-1.0.0-armhf-linux.tgz
 
