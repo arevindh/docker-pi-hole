@@ -14,4 +14,4 @@ services:
       context: .
       args:
         <<: *common-args
-        PIHOLE_BASE: ghcr.io/arevindh/docker-pi-hole-base:${DEBIAN_VERSION:-buster}-slim
+        PIHOLE_BASE: ghcr.io/pi-hole/docker-pi-hole-base:${DEBIAN_VERSION:-buster}-slim
