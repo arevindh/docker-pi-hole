@@ -104,7 +104,7 @@ echo "Arch is ${SP_ARCH}"
 
 wget https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 
-tar -zxvf ookla-speedtest-1.1.1-linux-aarch64.tgz
+tar -zxvf ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
 mv speedtest /usr/bin/speedtest
 
 speedtest --version
