@@ -53,7 +53,7 @@ export USER=pihole
 export PIHOLE_SKIP_OS_CHECK=true
 
 # Run the installer in unattended mode using the preseeded variables above and --reconfigure so that local repos are not updated
-curl -sSL https://install.pi-hole.net | bash -sex -- --unattended
+curl -sSL https://raw.githubusercontent.com/arevindh/pi-hole/master/automated%20install/basic-install.sh | bash -sex -- --unattended
 
 # At this stage, if we are building a :nightly tag, then switch the Pi-hole install to dev versions
 if [[ "${PIHOLE_DOCKER_TAG}" = 'nightly'  ]]; then
