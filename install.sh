@@ -88,7 +88,16 @@ mkdir /tmp/sp
 
 cd /tmp/sp
 
-curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.0.0-armhf-linux.tgz
+DETECTED_ARCH=$(dpkg --print-architecture)
+SP_ARCH=$DETECTED_ARCH
+case $DETECTED_ARCH in
+  arm64)
+    SP_ARCH="aarch64";;
+  amd64)
+    SP_ARCH="x86_64";;
+esac
+
+curl -o ookla-speedtest-1.0.0-armhf-linux.tgz https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tar.gz
 
 tar -xvzf ookla-speedtest-1.0.0-armhf-linux.tgz
 
