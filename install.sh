@@ -26,11 +26,6 @@ esac
   echo "https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.gz"
 }
 
-apt-get update
-apt-get install --no-install-recommends -y curl procps ca-certificates git wget
-# curl in armhf-buster's image has SSL issues. Running c_rehash fixes it.
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=923479
-c_rehash
 ln -s `which echo` /usr/local/bin/whiptail
 curl -L -s "$(s6_download_url)" | tar xvzf - -C /
 mv /init /s6-init
@@ -78,9 +73,6 @@ if [[ "${PIHOLE_DOCKER_TAG}" != "dev" && "${PIHOLE_DOCKER_TAG}" != "nightly" ]];
   # If we are on a version other than dev or nightly, disable `pihole checkout`, otherwise it is useful to have for quick troubleshooting sometimes
   sed -i $'s/)\s*piholeCheckoutFunc/) unsupportedFunc/g' /usr/local/bin/pihole
 fi
-
-# Inject a message into the debug scripts Operating System section to indicate that the debug log comes from a Docker system.
-sed -i $'s/echo_current_diagnostic "Operating system"/echo_current_diagnostic "Operating system"\\\n    log_write "${INFO} Pi-hole Docker Container: ${PIHOLE_DOCKER_TAG:-PIHOLE_DOCKER_TAG is unset}"/g' /opt/pihole/piholeDebug.sh
 
 touch /.piholeFirstBoot
 
