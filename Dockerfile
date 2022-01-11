@@ -11,6 +11,8 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         jq \
         sqlite3 \
+        wget \
+        git \
     && rm -rf /var/lib/apt/lists/*
 
 COPY install.sh /usr/local/bin/install.sh
