@@ -26,11 +26,6 @@ esac
   echo "https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.gz"
 }
 
-apt-get update
-apt-get install --no-install-recommends -y curl procps ca-certificates git
-# curl in armhf-buster's image has SSL issues. Running c_rehash fixes it.
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=923479
-c_rehash
 ln -s `which echo` /usr/local/bin/whiptail
 curl -L -s "$(s6_download_url)" | tar xvzf - -C /
 mv /init /s6-init
@@ -53,7 +48,7 @@ export USER=pihole
 export PIHOLE_SKIP_OS_CHECK=true
 
 # Run the installer in unattended mode using the preseeded variables above and --reconfigure so that local repos are not updated
-curl -sSL https://install.pi-hole.net | bash -sex -- --unattended
+curl -sSL https://raw.githubusercontent.com/arevindh/pi-hole/master/automated%20install/basic-install.sh | bash -sex -- --unattended
 
 # At this stage, if we are building a :nightly tag, then switch the Pi-hole install to dev versions
 if [[ "${PIHOLE_DOCKER_TAG}" = 'nightly'  ]]; then
@@ -79,9 +74,31 @@ if [[ "${PIHOLE_DOCKER_TAG}" != "dev" && "${PIHOLE_DOCKER_TAG}" != "nightly" ]];
   sed -i $'s/)\s*piholeCheckoutFunc/) unsupportedFunc/g' /usr/local/bin/pihole
 fi
 
-# Inject a message into the debug scripts Operating System section to indicate that the debug log comes from a Docker system.
-sed -i $'s/echo_current_diagnostic "Operating system"/echo_current_diagnostic "Operating system"\\\n    log_write "${INFO} Pi-hole Docker Container: ${PIHOLE_DOCKER_TAG:-PIHOLE_DOCKER_TAG is unset}"/g' /opt/pihole/piholeDebug.sh
-
 touch /.piholeFirstBoot
 
-echo 'Docker install successful'
+mkdir /tmp/sp
+
+cd /tmp/sp
+
+DETECTED_ARCH=$(dpkg --print-architecture)
+
+echo "DETECTED_ARCH ${DETECTED_ARCH}"
+
+SP_ARCH=$DETECTED_ARCH
+case $DETECTED_ARCH in
+  arm64)
+    SP_ARCH="aarch64";;
+  amd64)
+    SP_ARCH="x86_64";;
+esac
+
+echo "Arch is ${SP_ARCH}"
+
+wget https://install.speedtest.net/app/cli/ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
+
+tar -zxvf ookla-speedtest-1.1.1-linux-${SP_ARCH}.tgz
+mv speedtest /usr/bin/speedtest
+
+speedtest --version
+
+echo 'Speedtest Docker install successful'
