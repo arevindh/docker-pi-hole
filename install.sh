@@ -26,6 +26,13 @@ esac
   echo "https://github.com/just-containers/s6-overlay/releases/download/${S6_OVERLAY_VERSION}/s6-overlay-${S6_ARCH}.tar.gz"
 }
 
+# Helps to have some additional tools in the dev image when debugging
+if [[ "${PIHOLE_DOCKER_TAG}" = 'nightly' ||  "${PIHOLE_DOCKER_TAG}" = 'dev' ]]; then
+  apt-get update
+  apt-get install --no-install-recommends -y nano less
+  rm -rf /var/lib/apt/lists/*
+fi
+
 ln -s `which echo` /usr/local/bin/whiptail
 curl -L -s "$(s6_download_url)" | tar xvzf - -C /
 mv /init /s6-init
@@ -74,8 +81,6 @@ if [[ "${PIHOLE_DOCKER_TAG}" != "dev" && "${PIHOLE_DOCKER_TAG}" != "nightly" ]];
   sed -i $'s/)\s*piholeCheckoutFunc/) unsupportedFunc/g' /usr/local/bin/pihole
 fi
 
-touch /.piholeFirstBoot
-
 mkdir /tmp/sp
 
 cd /tmp/sp
@@ -102,3 +107,7 @@ mv speedtest /usr/bin/speedtest
 speedtest --version
 
 echo 'Speedtest Docker install successful'
+if [ ! -f /.piholeFirstBoot ]; then
+  touch /.piholeFirstBoot
+fi
+echo 'Docker install successful'

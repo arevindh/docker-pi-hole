@@ -5,9 +5,13 @@ s6-echo "Starting pihole-FTL ($FTL_CMD) as ${DNSMASQ_USER}"
 rm -f /dev/shm/FTL-* 2> /dev/null
 rm /run/pihole/FTL.sock 2> /dev/null
 
-# Touch files to ensure they exist (create if non-existing, preserve if existing)
+# install /dev/null files to ensure they exist (create if non-existing, preserve if existing)
 mkdir -pm 0755 /run/pihole
-touch /run/pihole-FTL.pid /run/pihole-FTL.port /var/log/pihole-FTL.log /var/log/pihole.log /etc/pihole/dhcp.leases
+[[ ! -f /run/pihole-FTL.pid ]] && install /dev/null /run/pihole-FTL.pid
+[[ ! -f /run/pihole-FTL.port ]] && install /dev/null /run/pihole-FTL.port
+[[ ! -f /var/log/pihole-FTL.log ]] && install /dev/null /var/log/pihole-FTL.log
+[[ ! -f /var/log/pihole.log ]] && install /dev/null /var/log/pihole.log
+[[ ! -f /etc/pihole/dhcp.leases ]] && install /dev/null /etc/pihole/dhcp.leases
 
 # Ensure that permissions are set so that pihole-FTL can edit all necessary files
 chown pihole:pihole /run/pihole-FTL.pid /run/pihole-FTL.port /var/log/pihole-FTL.log /var/log/pihole.log /etc/pihole/dhcp.leases /run/pihole /etc/pihole
@@ -20,7 +24,8 @@ chown -f pihole:pihole /etc/pihole/pihole-FTL.db /etc/pihole/gravity.db /etc/pih
 # Chown database file permissions so that the pihole group (web interface) can edit the file. We ignore errors as the files may not (yet) exist
 chmod -f 0664 /etc/pihole/pihole-FTL.db
 
-s6-setuidgid ${DNSMASQ_USER} pihole-FTL $FTL_CMD >/dev/null 2>&1
+# Call capsh with the detected capabilities
+capsh --inh=${CAP_STR:1} --addamb=${CAP_STR:1} --user=$DNSMASQ_USER --keep=1 -- -c "/usr/bin/pihole-FTL $FTL_CMD >/dev/null 2>&1" 
 
 # Notes on above:
 # - DNSMASQ_USER default of pihole is in Dockerfile & can be overwritten by runtime container env
