@@ -9,15 +9,18 @@
 
 - **Using Watchtower? See the [Note on Watchtower](#note-on-watchtower) at the bottom of this readme**
 
-- You may run into issues running `2022.04` and later on `buster`-based host systems due to [a known issue with Seccomp](https://github.com/moby/moby/issues/40734). The first recommendation is to upgrade your host OS to `bullseye`, which includes a more up to date (and fixed) version of `libseccomp2`.  
- _If you absolutley cannot do this, some users [have reported](https://github.com/pi-hole/docker-pi-hole/issues/1042#issuecomment-1086728157) success in updating `libseccomp2` via backports. You can try this workaround at your own risk_  
+- Due to [a known issue with Docker and libseccomp <2.5](https://github.com/moby/moby/issues/40734), you may run into issues running `2022.04` and later on host systems with an older version of `libseccomp2` ([Such as Debian/Raspbian buster or Ubuntu 20.04](https://pkgs.org/download/libseccomp2), and maybe [CentOS 7](https://pkgs.org/download/libseccomp)). 
 
-- Some users [have reported issues](https://github.com/pi-hole/docker-pi-hole/issues/963#issuecomment-1095602502) with using the `--privileged` flag on `2022.04` and above. TL;DR, don't use that that mode, and be [explicit with the permitted caps](https://github.com/pi-hole/docker-pi-hole#note-on-capabilities) (if needed) instead
+  The first recommendation is to upgrade your host OS, which will include a more up to date (and fixed) version of `libseccomp`. 
+  
+  _If you absolutely cannot do this, some users [have reported](https://github.com/arevindh/docker-pi-hole/issues/1042#issuecomment-1086728157) success in updating `libseccomp2` via backports on debian, or similar via updates on Ubuntu. You can try this workaround at your own risk_  (Note, you may also find that you need the latest `docker.io` (more details [here](https://blog.samcater.com/fix-workaround-rpi4-docker-libseccomp2-docker-20/))
+
+- Some users [have reported issues](https://github.com/arevindh/docker-pi-hole/issues/963#issuecomment-1095602502) with using the `--privileged` flag on `2022.04` and above. TL;DR, don't use that that mode, and be [explicit with the permitted caps](https://github.com/arevindh/docker-pi-hole#note-on-capabilities) (if needed) instead
 
 - As of `2022.04.01`, setting `CAP_NET_ADMIN` is only required if you are using Pi-hole as your DHCP server. The container will only try to set caps that are explicitly granted (or natively available)
 
-- In `2022.01` and later, the default `DNSMASQ_USER` has been changed to `pihole`, however this may cause issues on some systems such as Synology, see Issue [#963](https://github.com/pi-hole/docker-pi-hole/issues/963) for more information.  
- If the container wont start due to issues setting capabilities, set `DNSMASQ_USER` to `root` in your environment.
+- In `2022.01` and later, the default `DNSMASQ_USER` has been changed to `pihole`, however this may cause issues on some systems such as Synology, see Issue [#963](https://github.com/arevindh/docker-pi-hole/issues/963) for more information.  
+ If the container won't start due to issues setting capabilities, set `DNSMASQ_USER` to `root` in your environment.
 
 ## Quick Start
 
@@ -44,7 +47,7 @@ services:
     # Volumes store your data between container upgrades
     volumes:
       - './etc-pihole:/etc/pihole'
-      - './etc-dnsmasq.d:/etc/dnsmasq.d'    
+      - './etc-dnsmasq.d:/etc/dnsmasq.d'
     #   https://github.com/arevindh/docker-pi-hole#note-on-capabilities
     cap_add:
       - NET_ADMIN # Required if you are using Pi-hole as your DHCP server, else not needed
@@ -219,23 +222,16 @@ Users of older Ubuntu releases (circa 17.04) will need to disable dnsmasq.
 
 ## Docker tags and versioning
 
-The primary docker tags / versions are explained in the following table.  [Click here to see the full list of tags](https://store.docker.com/community/images/pihole/pihole/tags), I also try to tag with the specific version of Pi-hole Core for version archival purposes, the web version that comes with the core releases should be in the [GitHub Release notes](https://github.com/arevindh/docker-pi-hole/releases).
+The primary docker tags are explained in the following table.  [Click here to see the full list of tags](https://store.docker.com/community/images/pihole/pihole/tags). See [GitHub Release notes](https://github.com/arevindh/docker-pi-hole/releases) to see the specific version of Pi-hole Core, Web, and FTL included in the release.
 
-| tag                     | architecture | description                                                             | Dockerfile |
-| ---                     | ------------ | -----------                                                             | ---------- |
-| `latest`                | auto detect  | x86, arm, or arm64 container, docker auto detects your architecture.    | [Dockerfile](https://github.com/arevindh/docker-pi-hole/blob/master/Dockerfile) |
-| `v5.0`                  | auto detect  | Versioned tags, if you want to pin against a specific Pi-hole version, use one of these |  |
-| `v5.0-buster`           | auto detect  | Versioned tags, if you want to pin against a specific Pi-hole and Debian version, use one of these |  |
-| `v5.0-<arch>-buster `   | based on tag | Specific architectures and Debian version tags | |
-| `dev`                   | auto detect  | like latest tag, but for the development branch (pushed occasionally)   | |
-| `beta-*`                | auto detect  | Early beta releases of upcoming versions - here be dragons              | |
-| `nightly`               | auto detect  | Like `dev` but pushed every night and pulls from the latest `development` branches of the core Pi-hole components (Pi-hole, AdminLTE, FTL)  | |
-
-### `pihole/pihole:latest` [![](https://images.microbadger.com/badges/image/pihole/pihole:latest.svg)](https://microbadger.com/images/pihole/pihole "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/pihole/pihole:latest.svg)](https://microbadger.com/images/pihole/pihole "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/version/pihole/pihole:latest.svg)](https://microbadger.com/images/pihole/pihole "Get your own version badge on microbadger.com")
-
-This version of the docker aims to be as close to a standard Pi-hole installation by using the recommended base OS and the exact configs and scripts (minimally modified to get them working).  This enables fast updating when an update comes from Pi-hole.
-
-https://hub.docker.com/r/pihole/pihole/tags/
+| tag                 | description                                                                                                                                
+|---------------------|--------------------------------------------------------------------------------------------------------------------------------------------|
+| `latest`            | Always latest release                                                                                                                      |
+| `2022.04`           | Date-based release that can receive bugfix updates                                                                                         |
+| `2022.04.1`         | A specific image that will not receive updates                                                                                             |
+| `dev`               | Similar to `latest`, but for the development branch (pushed occasionally)                                                                  |
+| `*beta`             | Early beta releases of upcoming versions - here be dragons                                                                                 |
+| `nightly`           | Like `dev` but pushed every night and pulls from the latest `development` branches of the core Pi-hole components (Pi-hole, AdminLTE, FTL) |
 
 ## Upgrading, Persistence, and Customizations
 
@@ -307,4 +303,4 @@ We have noticed that a lot of people use Watchtower to keep their Pi-hole contai
 Pi-hole is an integral part of your network, don't let it fall over because of an unattended update in the middle of the night.
 # User Feedback
 
-Please report issues on the [GitHub project](https://github.com/arevindh/docker-pi-hole) when you suspect something docker related.  Pi-hole or general docker questions are best answered on our [user forums](https://github.com/pi-hole/pi-hole/blob/master/README.md#get-help-or-connect-with-us-on-the-web).  Ping me (@diginc) on the forums if it's a docker container and you're not sure if it's docker related.
+Please report issues on the [GitHub project](https://github.com/arevindh/docker-pi-hole) when you suspect something docker related.  Pi-hole or general docker questions are best answered on our [user forums](https://discourse.pi-hole.net/c/bugs-problems-issues/docker/30).
