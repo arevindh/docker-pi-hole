@@ -6,6 +6,14 @@ ENV PIHOLE_DOCKER_TAG "${PIHOLE_DOCKER_TAG}"
 
 ENV S6_OVERLAY_VERSION v3.1.1.2
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+        jq \
+        sqlite3 \
+        wget \
+        git \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV PIHOLE_INSTALL /etc/.pihole/automated\ install/basic-install.sh
 
 ENTRYPOINT [ "/s6-init" ]
