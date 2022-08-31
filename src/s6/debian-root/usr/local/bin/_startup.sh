@@ -1,17 +1,21 @@
 #!/bin/bash -e
 
+if [ "${PH_VERBOSE:-0}" -gt 0 ] ; then
+    set -x ;
+fi
+
 # The below functions are all contained in bash_functions.sh
 # shellcheck source=/dev/null
-. /bash_functions.sh
+. /usr/local/bin/bash_functions.sh
 
 # shellcheck source=/dev/null
 SKIP_INSTALL=true . "${PIHOLE_INSTALL}"
 
-echo " ::: Starting docker specific checks & setup for docker pihole/pihole"
+echo "  [i] Starting docker specific checks & setup for docker pihole/pihole"
 
 # TODO:
 #if [ ! -f /.piholeFirstBoot ] ; then
-#    echo " ::: Not first container startup so not running docker's setup, re-create container to run setup again"
+#    echo "   [i] Not first container startup so not running docker's setup, re-create container to run setup again"
 #else
 #    regular_setup_functions
 #fi
@@ -49,6 +53,7 @@ setup_FTL_upstream_DNS
 apply_FTL_Configs_From_Env
 setup_FTL_User
 setup_FTL_Interface
+setup_FTL_ListeningBehaviour
 setup_FTL_CacheSize
 setup_FTL_query_logging
 setup_FTL_server || true
@@ -62,8 +67,12 @@ test_configs
 
 [ -f /.piholeFirstBoot ] && rm /.piholeFirstBoot
 
-echo "::: Docker start setup complete"
+echo "  [i] Docker start setup complete"
+echo ""
 
 pihole -v
 
 echo "  Container tag is: ${PIHOLE_DOCKER_TAG}"
+echo ""
+echo "  [i] pihole-FTL ($FTL_CMD) will be started as ${DNSMASQ_USER}"
+echo ""
