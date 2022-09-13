@@ -6,7 +6,6 @@ ENV PIHOLE_DOCKER_TAG "${PIHOLE_DOCKER_TAG}"
 
 ENV S6_OVERLAY_VERSION v3.1.1.2
 
-
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
         jq \
@@ -15,7 +14,6 @@ RUN apt-get update \
         git \
     && rm -rf /var/lib/apt/lists/*
 
-COPY ./scripts/install.sh /usr/local/bin/install.sh
 ENV PIHOLE_INSTALL /etc/.pihole/automated\ install/basic-install.sh
 
 ENTRYPOINT [ "/s6-init" ]
@@ -31,9 +29,6 @@ ARG PHP_ENV_CONFIG
 ENV PHP_ENV_CONFIG /etc/lighttpd/conf-enabled/15-fastcgi-php.conf
 ARG PHP_ERROR_LOG
 ENV PHP_ERROR_LOG /var/log/lighttpd/error-pihole.log
-COPY ./scripts/start.sh /
-COPY ./scripts/bash_functions.sh /
-COPY ./scripts/gravityonboot.sh /
 
 # IPv6 disable flag for networks/devices that do not support it
 ENV IPv6 True
@@ -42,9 +37,10 @@ EXPOSE 53 53/udp
 EXPOSE 67/udp
 EXPOSE 80
 
-ENV S6_LOGGING 0
 ENV S6_KEEP_ENV 1
 ENV S6_BEHAVIOUR_IF_STAGE2_FAILS 2
+ENV S6_CMD_WAIT_FOR_SERVICES_MAXTIME 0
+
 
 ENV FTLCONF_LOCAL_IPV4 0.0.0.0
 ENV FTL_CMD no-daemon
